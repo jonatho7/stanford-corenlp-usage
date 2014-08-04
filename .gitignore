@@ -1,6 +1,8 @@
 *.class
 .idea/
 stanford-corenlp-usage.iml
+DocumentAnalysis/DavidBogue-Textalytics/
+
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
