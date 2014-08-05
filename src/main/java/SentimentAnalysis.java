@@ -14,10 +14,14 @@ import java.util.Properties;
 
 public class SentimentAnalysis {
     public static void main(String[] args) {
+        double startTime = System.nanoTime();
+        double elapsedTime;
         Properties props = new Properties();
         props.put("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
         //props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        elapsedTime = System.nanoTime() - startTime;
+        System.out.println("time - StanfordCoreNLP pipeline: " + elapsedTime);
 
         String inputText =
                 "I am brilliantly happy. " +
@@ -30,16 +34,21 @@ public class SentimentAnalysis {
 
         //Create an empty Annotation just with the given text.
         Annotation document = new Annotation(inputText);
+        elapsedTime = System.nanoTime() - startTime;
+        System.out.println("time - annotation: " + elapsedTime);
 
         //Run all Annotators on this text.
         pipeline.annotate(document);
+        elapsedTime = System.nanoTime() - startTime;
+        System.out.println("time - pipeline.annotate(document): " + elapsedTime);
 
         // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
         List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
         Double sentiment = calculateSentiment(sentences);
 
         System.out.println("sentiment: " + sentiment);
-
+        elapsedTime = System.nanoTime() - startTime;
+        System.out.println("time - analyze sentiment: " + elapsedTime);
     }
 
     private static Double calculateSentiment(List<CoreMap> sentences) {
