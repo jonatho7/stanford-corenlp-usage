@@ -19,15 +19,21 @@ public class SentimentAnalysis {
         //props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
-        String inputText = "I am brilliantly happy. Today is wonderful. This movie is awful. This airplane is disgusting, gross, and sick. The pangs of war are still with us, causing all citizens to continue to live in fear of the occurrence of such atrocities again in the future. The recovery of the American economy has been one of the most positive and uplifting events in recent history. This movie is wonderful.";
+        String inputText =
+                "I am brilliantly happy. " +
+                "Today is wonderful. " +
+                "This movie is awful. " +
+                "This airplane is disgusting, gross, and sick. " +
+                "The pangs of war are still with us, causing all citizens to continue to live in fear of the occurrence of such atrocities again in the future. " +
+                "The recovery of the American economy has been one of the most positive and uplifting events in recent history. " +
+                "This movie is wonderful.";
 
-        ////Create an empty Annotation just with the given text.
+        //Create an empty Annotation just with the given text.
         Annotation document = new Annotation(inputText);
 
-        ////Run all Annotators on this text.
+        //Run all Annotators on this text.
         pipeline.annotate(document);
 
-        // these are all the sentences in this document
         // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
         List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
         Double sentiment = calculateSentiment(sentences);
@@ -42,16 +48,35 @@ public class SentimentAnalysis {
         for (CoreMap sentence : sentences) {
             Tree sentimentTree = sentence.get(SentimentCoreAnnotations.AnnotatedTree.class);
             int sentiment = RNNCoreAnnotations.getPredictedClass(sentimentTree);
+            System.out.println("sent: " + convertSentiment(sentiment));
 
             sentenceCount++;
             totalSentiment += sentiment;
         }
         if (sentenceCount > 0) {
             double averageSentiment = (double) totalSentiment / sentenceCount;
-            return averageSentiment;
+            return convertSentiment(averageSentiment);
         } else {
             return null;
         }
+    }
+
+    /**
+     * Convert sentiment from a 0,1,2,3,4 scale to a -1 to 1 scale.
+     * Old scale:
+     * 0 = very negative.
+     * 2 = neutral.
+     * 4 = very positive.
+     * New scale:
+     * -1 = very negative.
+     * 0 = neutral.
+     * 1 = very positive.
+     * @param oldSentiment
+     * @return
+     */
+    private static double convertSentiment(double oldSentiment){
+        double newSentiment = (oldSentiment -2) / 2.0;
+        return newSentiment;
     }
 
 }
