@@ -1,6 +1,3 @@
-import com.surmize.textalytics.AnalyzedDocument;
-import com.surmize.textalytics.AnalyzedSentence;
-import com.surmize.textalytics.TextAnalyzer;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -16,12 +13,13 @@ public class SentimentAnalysis {
     public static void main(String[] args) {
         double startTime = System.nanoTime();
         double elapsedTime;
-        Properties props = new Properties();
-        props.put("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
-        //props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref, sentiment");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+        StanfordCoreNLP pipeline = setupNLPPipelineForSentimentAnalysis();
         elapsedTime = System.nanoTime() - startTime;
         System.out.println("time - StanfordCoreNLP pipeline: " + elapsedTime);
+
+
+
 
         String inputText =
                 "I am brilliantly happy. " +
@@ -32,23 +30,30 @@ public class SentimentAnalysis {
                 "The recovery of the American economy has been one of the most positive and uplifting events in recent history. " +
                 "This movie is wonderful.";
 
-        //Create an empty Annotation just with the given text.
-        Annotation document = new Annotation(inputText);
+        Double sentiment = calculateSentimentForText(pipeline, inputText);
+        System.out.println("sentiment: " + sentiment);
         elapsedTime = System.nanoTime() - startTime;
-        System.out.println("time - annotation: " + elapsedTime);
+        System.out.println("time - analyze sentiment: " + elapsedTime);
+    }
+
+    private static StanfordCoreNLP setupNLPPipelineForSentimentAnalysis() {
+        Properties props = new Properties();
+        props.put("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        return pipeline;
+    }
+
+    private static Double calculateSentimentForText(StanfordCoreNLP pipeline, String text) {
+        //Create an empty Annotation just with the given text.
+        Annotation document = new Annotation(text);
 
         //Run all Annotators on this text.
         pipeline.annotate(document);
-        elapsedTime = System.nanoTime() - startTime;
-        System.out.println("time - pipeline.annotate(document): " + elapsedTime);
 
         // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
         List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
         Double sentiment = calculateSentiment(sentences);
-
-        System.out.println("sentiment: " + sentiment);
-        elapsedTime = System.nanoTime() - startTime;
-        System.out.println("time - analyze sentiment: " + elapsedTime);
+        return sentiment;
     }
 
     private static Double calculateSentiment(List<CoreMap> sentences) {
@@ -57,14 +62,14 @@ public class SentimentAnalysis {
         for (CoreMap sentence : sentences) {
             Tree sentimentTree = sentence.get(SentimentCoreAnnotations.AnnotatedTree.class);
             int sentiment = RNNCoreAnnotations.getPredictedClass(sentimentTree);
-            System.out.println("sent: " + convertSentiment(sentiment));
+            System.out.println("sent: " + convertSentimentToNewScale(sentiment));
 
             sentenceCount++;
             totalSentiment += sentiment;
         }
         if (sentenceCount > 0) {
             double averageSentiment = (double) totalSentiment / sentenceCount;
-            return convertSentiment(averageSentiment);
+            return convertSentimentToNewScale(averageSentiment);
         } else {
             return null;
         }
@@ -83,7 +88,7 @@ public class SentimentAnalysis {
      * @param oldSentiment
      * @return
      */
-    private static double convertSentiment(double oldSentiment){
+    private static double convertSentimentToNewScale(double oldSentiment){
         double newSentiment = (oldSentiment -2) / 2.0;
         return newSentiment;
     }
