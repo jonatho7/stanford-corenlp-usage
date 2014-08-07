@@ -18,9 +18,6 @@ public class SentimentAnalysis {
         elapsedTime = System.nanoTime() - startTime;
         System.out.println("time - StanfordCoreNLP pipeline: " + elapsedTime);
 
-
-
-
         String inputText =
                 "I am brilliantly happy. " +
                 "Today is wonderful. " +
