@@ -120,10 +120,25 @@ public class SUTimeUtil {
 
     private static PartialTimeWithPosition customParse(String dateString, String originalText, Integer charOffsetStart, Integer charOffsetEnd){
         //Temp fix for now.
-        dateString = "1997-XX-XX";
-        Integer year = Integer.parseInt(dateString.substring(0, 4));
+        //String tempString = "1997-XX-XX";
+        Integer year = null;
+        Integer month = null;
+        Integer day = null;
+        if (dateString != null){
+            if (dateString.length() >= 10 && dateString.substring(4, 10).equals("-XX-XX")) {
+                year = Integer.parseInt(dateString.substring(0, 4));
+            }
+            if (dateString.length() >= 9 && dateString.substring(0, 5).equals("XXXX-")){
+                month = Integer.parseInt(dateString.substring(5, 6));
+                day = Integer.parseInt(dateString.substring(7, 9));
+            }
+        }
+
+
         PartialTimeWithPosition time = new PartialTimeWithPosition.Builder()
                 .setYear(year)
+                .setMonth(month)
+                .setDay(day)
                 .setOriginalText(originalText)
                 .setCharOffsetStart(charOffsetStart)
                 .setCharOffsetEnd(charOffsetEnd)
