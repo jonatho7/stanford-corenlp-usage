@@ -9,10 +9,11 @@ public class PartialTimeWithPosition {
     private final Integer min;    //0-59.
     private final Integer sec;    //0-59
     private final Integer millis; //0-999
+    private final String originalText;
     private final Integer charOffsetStart;
     private final Integer charOffsetEnd;
 
-    private PartialTimeWithPosition(Builder builder){
+    private PartialTimeWithPosition(Builder builder) {
         year = builder.year;
         month = builder.month;
         day = builder.day;
@@ -20,6 +21,7 @@ public class PartialTimeWithPosition {
         min = builder.min;
         sec = builder.sec;
         millis = builder.millis;
+        originalText = builder.originalText;
         charOffsetStart = builder.charOffsetStart;
         charOffsetEnd = builder.charOffsetEnd;
     }
@@ -50,6 +52,10 @@ public class PartialTimeWithPosition {
 
     public Integer getMillis() {
         return millis;
+    }
+
+    public String getOriginalText() {
+        return originalText;
     }
 
     public Integer getCharOffsetStart() {
@@ -106,6 +112,13 @@ public class PartialTimeWithPosition {
             tempString += ":" + "XX";
         }
 
+        //Add the original text.
+        tempString += ". " + originalText;
+
+        //Add the character offsets.
+        tempString += ". From char " + charOffsetStart +
+                " to char " + charOffsetEnd;
+
         return tempString;
     }
 
@@ -117,6 +130,7 @@ public class PartialTimeWithPosition {
         private Integer min = null;
         private Integer sec = null;
         private Integer millis = null;
+        private String originalText = null;
         private Integer charOffsetStart = null;
         private Integer charOffsetEnd = null;
 
@@ -124,7 +138,7 @@ public class PartialTimeWithPosition {
 
         }
 
-        public PartialTimeWithPosition build(){
+        public PartialTimeWithPosition build() {
             return new PartialTimeWithPosition(this);
         }
 
@@ -160,6 +174,11 @@ public class PartialTimeWithPosition {
 
         public Builder setMillis(Integer millis) {
             this.millis = millis;
+            return this;
+        }
+
+        public Builder setOriginalText(String originalText) {
+            this.originalText = originalText;
             return this;
         }
 

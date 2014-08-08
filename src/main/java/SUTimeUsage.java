@@ -16,10 +16,10 @@ public class SUTimeUsage {
             Object temp = extractedTimes.get(i);
             if (temp.getClass() == DateWithPosition.class) {
                 DateWithPosition dateWithPosition = (DateWithPosition) temp;
-                System.out.println("extractedTimes: " + dateWithPosition.getDate());
+                System.out.println("date " + i + ": " + dateWithPosition.toString() );
             } else if (temp.getClass() == PartialTimeWithPosition.class){
                 PartialTimeWithPosition partialTime = (PartialTimeWithPosition) temp;
-                System.out.println("extractedTimes: " + partialTime.toString() );
+                System.out.println("date " + i + ": " + partialTime.toString());
             }
         }
 

@@ -47,6 +47,7 @@ public class SUTimeUtil {
                     " to " + tokens.get(tokens.size() - 1).get(CoreAnnotations.CharacterOffsetEndAnnotation.class) + ']' +
                     " --> " + cm.get(TimeExpression.Annotation.class).getTemporal());
 
+            String originalText = cm.toString();
             Integer charOffsetStart = tokens.get(0).get(CoreAnnotations.CharacterOffsetBeginAnnotation.class);
             Integer charOffsetEnd = tokens.get(tokens.size() - 1).get(CoreAnnotations.CharacterOffsetEndAnnotation.class);
 
@@ -55,17 +56,18 @@ public class SUTimeUtil {
             System.out.println("b.getTime() - SUTime.Time: " + temporal.getTime() );
             System.out.println();
 
+
             if (temporal.getTimexType().toString().equals("TIME") || temporal.getTimexType().toString().equals("DATE") ){
                 SUTime.Time time = temporal.getTime();
                 String dateString = time.toString();
                 Date date = parseStringForDate(dateString);
                 if (date != null) {
-                    DateWithPosition extractedDate = new DateWithPosition(date, charOffsetStart, charOffsetEnd);
+                    DateWithPosition extractedDate = new DateWithPosition(date, originalText, charOffsetStart, charOffsetEnd);
                     extractedTimes.add(extractedDate);
                     continue;
                 }
 
-                PartialTimeWithPosition partialTimeWithPosition = customParse(dateString);
+                PartialTimeWithPosition partialTimeWithPosition = customParse(dateString, originalText, charOffsetStart, charOffsetEnd);
                 if (partialTimeWithPosition != null) {
                     extractedTimes.add(partialTimeWithPosition);
                     continue;
@@ -116,11 +118,16 @@ public class SUTimeUtil {
         return null;
     }
 
-    private static PartialTimeWithPosition customParse(String dateString){
+    private static PartialTimeWithPosition customParse(String dateString, String originalText, Integer charOffsetStart, Integer charOffsetEnd){
         //Temp fix for now.
         dateString = "1997-XX-XX";
         Integer year = Integer.parseInt(dateString.substring(0, 4));
-        PartialTimeWithPosition time = new PartialTimeWithPosition.Builder().setYear(year).build();
+        PartialTimeWithPosition time = new PartialTimeWithPosition.Builder()
+                .setYear(year)
+                .setOriginalText(originalText)
+                .setCharOffsetStart(charOffsetStart)
+                .setCharOffsetEnd(charOffsetEnd)
+                .build();
         return time;
     }
 
