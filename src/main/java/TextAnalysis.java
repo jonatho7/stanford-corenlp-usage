@@ -65,7 +65,7 @@ public class TextAnalysis {
         AnalyzedDocument analyzedDocument = textAnalyzer.analyze(inputText);
         System.out.println("analyzedDocument sentiment: " + analyzedDocument.getSentiment());
 
-        //analyzeTimeAnnotations(document);
+        //getTimeAnnotations(document);
         //analyzeSentences(document);
 
     }
