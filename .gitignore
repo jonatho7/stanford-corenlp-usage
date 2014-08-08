@@ -1,6 +1,6 @@
-*.class
 .idea/
-stanford-corenlp-usage.iml
+*.iml
+target
 DocumentAnalysis/DavidBogue-Textalytics/
 
 
