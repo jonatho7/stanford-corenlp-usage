@@ -1,0 +1,36 @@
+/*
+String inputText =
+
+        "I am brilliantly happy. " +
+                "Today is wonderful. " +
+                "This movie is awful. " +
+                "This airplane is disgusting, gross, and sick. " +
+                "The pangs of war are still with us, causing all citizens to continue to live in fear of the occurrence of such atrocities again in the future. " +
+                "The recovery of the American economy has been one of the most positive and uplifting events in recent history. " +
+                "This movie is wonderful." +
+                "Three interesting dates are 18 Feb 1997, the 20th of july and 4 days from today." +
+                "I will be working from 5:00PM to 9:00PM tomorrow." +
+                "You are going there on Tuesday 1-2pm." +
+                "I am free on Wednesday night";
+*/
+
+Saved Code:
+
+Timex c = cm.get(TimeAnnotations.TimexAnnotation.class);
+//System.out.println("c.timexType() - String: " + c.timexType() );
+
+
+Integer charOffsetStart = tokens.get(0).get(CoreAnnotations.CharacterOffsetBeginAnnotation.class);
+Integer charOffsetEnd = tokens.get(tokens.size() - 1).get(CoreAnnotations.CharacterOffsetEndAnnotation.class);
+
+SUTime.Temporal temporal = cm.get(TimeExpression.Annotation.class).getTemporal();
+System.out.println("b.getTimexType - SUTime.TimexType: " + temporal.getTimexType());
+SUTime.TimexType agg = temporal.getTimexType();
+
+System.out.println("b.getTimexValue - String: " + temporal.getTimexValue());
+System.out.println("b.getTime() - SUTime.Time: " + temporal.getTime() );
+
+System.out.println("b.getDuration(): - SUTime.Duration " + temporal.getDuration());
+System.out.println("b.getPeriod() - SUTime.Duration : " + temporal.getPeriod() );
+System.out.println("b.getRange() - SUTime.Range: " + temporal.getRange());
+System.out.println();
